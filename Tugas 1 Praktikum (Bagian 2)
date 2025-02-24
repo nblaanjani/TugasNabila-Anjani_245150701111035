@@ -1,27 +1,67 @@
-public class BioskopAsik {
+import java.util.ArrayList;
+import java.util.Scanner;
+public class BioskopABC {
     public static void main(String[] args) {
-        Film film1 = new Film("Pengabdi Setan", "Horor", "18:00", 50000);
-        Film film2 = new Film("Upin Ipin", "Animation", "16:00", 40000);
-        Film film3 = new Film("Joker", "Drama", "20:00", 45000);
-        
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Tiket> daftarTiket = new ArrayList<>();
+        int nomorTiket = 101;
+        double totalHarga = 0;
+
+        // Membuat film
+        Film film1 = new Film("Avengers", "Action", "14:00", 50000);
+        Film film2 = new Film("Frozen", "Animation", "16:00", 40000);
+        Film film3 = new Film("Conjuring", "Horror", "20:00", 45000);
+
+        // Membuat studio
         Studio studio1 = new Studio(1, 100, film1);
         Studio studio2 = new Studio(2, 80, film2);
         Studio studio3 = new Studio(3, 90, film3);
+
+        Studio[] studios = {studio1, studio2, studio3};
         
-        Penonton penonton1 = new Penonton("Andi");
-        Penonton penonton2 = new Penonton("Budi");
-        
-        Tiket tiket1 = new Tiket(101, film1, studio1, 5, penonton1);
-        Tiket tiket2 = new Tiket(102, film2, studio2, 12, penonton2);
-        
-        System.out.println("Informasi Studio:");
-        studio1.tampilkanInfo();
-        studio2.tampilkanInfo();
-        studio3.tampilkanInfo();
-        
-        System.out.println("\nInformasi Tiket yang Dipesan:");
-        tiket1.tampilkanInfo();
-        System.out.println();
-        tiket2.tampilkanInfo();
+        System.out.println("Selamat datang di Bioskop ABC!");
+        System.out.print("Masukkan jumlah tiket yang ingin dibeli: ");
+        int jumlahTiket = scanner.nextInt();
+        scanner.nextLine(); // Membersihkan buffer
+
+        for (int i = 0; i < jumlahTiket; i++) {
+            System.out.println("\nTiket ke-" + (i + 1));
+            System.out.print("Masukkan nama penonton: ");
+            String namaPenonton = scanner.nextLine();
+            Penonton penonton = new Penonton(namaPenonton);
+
+            System.out.println("Pilih film yang tersedia:");
+            for (int j = 0; j < studios.length; j++) {
+                System.out.println((j + 1) + ". " + studios[j].film.judul);
+            }
+            System.out.print("Masukkan nomor pilihan film: ");
+            int pilihanFilm = scanner.nextInt();
+            scanner.nextLine(); // Membersihkan buffer
+
+            if (pilihanFilm < 1 || pilihanFilm > studios.length) {
+                System.out.println("Pilihan tidak valid!");
+                i--; // Mengulang input tiket yang sama
+                continue;
+            }
+            Studio studioPilihan = studios[pilihanFilm - 1];
+
+            System.out.print("Masukkan nomor kursi: ");
+            int nomorKursi = scanner.nextInt();
+            scanner.nextLine(); // Membersihkan buffer
+
+            Tiket tiket = new Tiket(nomorTiket++, studioPilihan.film, studioPilihan, nomorKursi, penonton);
+            daftarTiket.add(tiket);
+            totalHarga += studioPilihan.film.hargaTiket;
+            System.out.println("Tiket berhasil dipesan!\n");
+        }
+
+        // Menampilkan informasi tiket yang telah dipesan
+        System.out.println("\n=== Tiket yang Dipesan ===");
+        for (Tiket tiket : daftarTiket) {
+            tiket.tampilkanInfo();
+            System.out.println();
+        }
+        System.out.println("Total Harga Tiket: " + totalHarga);
+        scanner.close();
     }
 }
